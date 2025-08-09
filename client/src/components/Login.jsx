@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import useAuthStore from "./store/authStore";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ export default function Login() {
     password: "",
   });
 
+   const login = useAuthStore((state) => state.login);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const validate = () => {
@@ -45,6 +47,7 @@ export default function Login() {
 
       if (res.ok) {
         toast.success("Login successful!");
+         login();
         setTimeout(() => navigate("/dashboard"), 1500); // Navigate after toast
       } else {
         const errData = await res.json();
