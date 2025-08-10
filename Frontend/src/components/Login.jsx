@@ -39,7 +39,7 @@ export default function Login() {
     if (!validate()) return;
 
     try {
-      const res = await fetch("http://localhost:3000/api/login", {
+      const res = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -60,9 +60,10 @@ export default function Login() {
 
   const handleGoogleLogin = () => {
     // Replace this with actual Google login logic
-    toast.success("Google login successful!");
-    setTimeout(() => navigate("/dashboard"), 1500);
+    console.log("Redirecting to Google login...");
+      window.location.href = "http://localhost:3000/api/auth/google";
   };
+
 
   return (
     <div
