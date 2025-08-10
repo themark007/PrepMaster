@@ -12,6 +12,7 @@ import Dashboard from './components/Dashboard.jsx'
 import NotFound from './components/NotFound.jsx'
 import useAuthStore from './components/store/authStore.js'
 import { Navigate } from 'react-router-dom'
+import GoogleSuccess from './components/google-success.jsx'
 
 function App() {
   
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/google-success" element={<GoogleSuccess />} />
 
           {/* Protected Dashboard */}
           <Route path="/dashboard" element={

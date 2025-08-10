@@ -2,6 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
+import { Strategy } from 'passport-google-oauth2';
+import GoogleStrategy from 'passport-google-oauth2'
+import passport from 'passport';
+
+
 
 
 dotenv.config();
@@ -17,13 +22,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 
+
 // Routes
 app.get('/', (req, res) => {
   res.send('Welcome to the PrepMaster API!');
 });
 
 app.use('/api/auth', authRoutes);
-
 
 
 app.listen(PORT, () => {

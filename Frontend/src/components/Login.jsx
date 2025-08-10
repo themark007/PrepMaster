@@ -60,9 +60,10 @@ export default function Login() {
 
   const handleGoogleLogin = () => {
     // Replace this with actual Google login logic
-    toast.success("Google login successful!");
-    setTimeout(() => navigate("/dashboard"), 1500);
+    console.log("Redirecting to Google login...");
+      window.location.href = "http://localhost:3000/api/auth/google";
   };
+
 
   return (
     <div

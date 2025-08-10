@@ -1,5 +1,12 @@
 import bcrypt from 'bcrypt';
 import pool from '../config/db.js';
+import { Strategy } from 'passport-google-oauth2';
+import GoogleStrategy from 'passport-google-oauth2'
+import passport from 'passport';
+import dotenv from 'dotenv';
+
+
+dotenv.config();
 
 // Signup Controller
 export const signup = async (req, res) => {
@@ -59,3 +66,70 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
+
+passport.use("google", new GoogleStrategy({
+    clientID: process.env.Client_ID,
+    clientSecret: process.env.Client_secret,  // make sure case matches
+    callbackURL: "http://localhost:3000/api/auth/google/callback",
+    userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
+}, async (accessToken, refreshToken, profile, cb) => {
+    try {
+      console.log("in google strategy");
+        const email = profile.emails?.[0]?.value;
+        const name = profile.displayName;
+
+        if (!email) {
+            return cb(new Error("No email found from Google"), null);
+        }
+
+        // Check if user exists
+        const userCheck = await pool.query(
+            'SELECT * FROM auth1 WHERE email = $1',
+            [email]
+        );
+
+        if (userCheck.rows.length === 0) {
+            // Hash "google" as the password
+            const hashedPassword = await bcrypt.hash("google", 10);
+
+            await pool.query(
+                'INSERT INTO auth1 (name, email, password) VALUES ($1, $2, $3)',
+                [name, email, hashedPassword]
+            );
+        }
+
+        cb(null, { email, name, googleLogin: true });
+
+    } catch (err) {
+        cb(err, null);
+    }
+}));
+
+
+
+export const googleCallback = (req, res) => {
+    passport.authenticate('google', { session: false }, (err, user) => {
+        if (err ) {
+            console.error('Google authentication error:', err);
+            return res.redirect('/login?error=google-auth-failed');
+        }
+
+        
+
+        // Redirect to frontend with token
+        res.redirect(`http://localhost:5173/google-success?token=${true}`);
+    })(req, res);
+};
+
+
+export const googleAuth = passport.authenticate('google', {
+  scope: ['profile', 'email'],
+});
+
+
+
+
+
+
