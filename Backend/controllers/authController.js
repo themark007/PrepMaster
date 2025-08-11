@@ -18,7 +18,7 @@ export const signup = async (req, res) => {
     }
 
     const emailCheck = await pool.query(
-      'SELECT * FROM auth1 WHERE email = $1',
+      'SELECT * FROM users WHERE email = $1',
       [email]
     );
     if (emailCheck.rows.length > 0) {
@@ -28,7 +28,7 @@ export const signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await pool.query(
-      'INSERT INTO auth1 (name, email, password) VALUES ($1, $2, $3)',
+      'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
       [name, email, hashedPassword]
     );
 
@@ -49,7 +49,7 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    const user = await pool.query('SELECT * FROM auth1 WHERE email = $1', [email]);
+    const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (user.rows.length === 0) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -86,7 +86,7 @@ passport.use("google", new GoogleStrategy({
 
         // Check if user exists
         const userCheck = await pool.query(
-            'SELECT * FROM auth1 WHERE email = $1',
+            'SELECT * FROM users WHERE email = $1',
             [email]
         );
 
@@ -95,7 +95,7 @@ passport.use("google", new GoogleStrategy({
             const hashedPassword = await bcrypt.hash("google", 10);
 
             await pool.query(
-                'INSERT INTO auth1 (name, email, password) VALUES ($1, $2, $3)',
+                'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
                 [name, email, hashedPassword]
             );
         }
