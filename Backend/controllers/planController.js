@@ -122,3 +122,36 @@ export const getPlanByPlaylistId = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+
+export const getUserPlaylists = async (req, res) => {
+    try {
+        const { user_id } = req.params;
+
+        if (!user_id) {
+            return res.status(400).json({ success: false, message: "user_id is required" });
+        }
+
+        const query = `
+            SELECT id AS study_plan_id, name, playlist_id, playlist_url, created_at
+            FROM study_plans
+            WHERE user_id = $1
+            ORDER BY created_at DESC;
+        `;
+
+        const result = await pool.query(query, [user_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ success: false, message: "No playlists found for this user" });
+        }
+
+        res.status(200).json({
+            success: true,
+            playlists: result.rows
+        });
+
+    } catch (error) {
+        console.error("Error fetching playlists for user:", error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
