@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
+import planRoutes from './routes/planRoutes.js';
 import { Strategy } from 'passport-google-oauth2';
 import GoogleStrategy from 'passport-google-oauth2'
 import passport from 'passport';
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/plans', planRoutes );
 
 
 app.listen(PORT, () => {

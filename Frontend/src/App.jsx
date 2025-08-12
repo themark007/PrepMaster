@@ -13,6 +13,8 @@ import NotFound from './components/NotFound.jsx'
 import useAuthStore from './components/store/authStore.js'
 import { Navigate } from 'react-router-dom'
 import GoogleSuccess from './components/google-success.jsx'
+import Create from './components/playlist/Create.jsx'
+
 
 function App() {
   
@@ -31,6 +33,16 @@ function App() {
               <Dashboard />
             </ProtectedRoute>
           } />
+
+
+           {/* Protected Dashboard */}
+          <Route path="/playlist" element={
+            <ProtectedRoute>
+              <Create />
+            </ProtectedRoute>
+          } />
+
+          
 
           {/* 404 Page */}
           <Route path="/404" element={<NotFound />} />
