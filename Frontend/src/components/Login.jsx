@@ -45,13 +45,15 @@ export default function Login() {
         body: JSON.stringify(formData),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
+        localStorage.setItem("token",data.token);
         toast.success("Login successful!");
          login();
         setTimeout(() => navigate("/dashboard"), 1500); // Navigate after toast
       } else {
-        const errData = await res.json();
-        toast.error(errData.message || "Invalid credentials");
+        toast.error(data.message || "Invalid credentials");
       }
     } catch (err) {
       toast.error("Error connecting to server");

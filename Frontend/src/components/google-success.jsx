@@ -14,14 +14,17 @@ const login = useAuthStore((state) => state.login);
 const token = true;
 
  useEffect(() => {
-  //const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
   
 
   if (token) {
     localStorage.setItem("auth_token", token);
     login(); // sets Zustand isLoggedIn = true
+    toast.success("Login successful!");
     navigate("/dashboard");
   } else {
+    toast.error("Login failed. Please try again.");
     navigate("/login");
   }
 }, [login, navigate]);

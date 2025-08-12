@@ -54,12 +54,14 @@ export default function Signup() {
         body: JSON.stringify(formData),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        toast.success("Login successful!");
+        localStorage.setItem("token", data.token);
+        toast.success("Signup successful!");
         setTimeout(() => navigate("/Login"), 1500);
       } else {
-        const errData = await res.json();
-        toast.error(errData.message || "Something went wrong");
+        toast.error(data.message || "Something went wrong");
       }
     } catch (err) {
       toast.error("Error connecting to server");

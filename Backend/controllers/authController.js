@@ -4,7 +4,15 @@ import { Strategy } from 'passport-google-oauth2';
 import GoogleStrategy from 'passport-google-oauth2'
 import passport from 'passport';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 
+const generateToken =(user)=>{
+  return jwt.sign(
+    {id: user.id , email: user.email},
+    process.env.JWT_SECRET,
+    {expiresIn: process.env.JWT_EXPIRES_IN }
+  )
+}
 
 dotenv.config();
 
@@ -27,12 +35,14 @@ export const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await pool.query(
+    const newUser= await pool.query(
       'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
       [name, email, hashedPassword]
     );
 
-    res.status(201).json({ message: 'Signup successful!' });
+    const token = generateToken(newUser.rows[0]);
+
+    res.status(201).json({ message: 'Signup successful!' ,token});
 
   } catch (error) {
     console.error('Error during signup:', error);
@@ -49,17 +59,20 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-    if (user.rows.length === 0) {
+    const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = userResult.rows[0];
+    if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const isMatch = await bcrypt.compare(password, user.rows[0].password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    res.status(200).json({ message: 'Login successful!' });
+    const token = generateToken(user);
+
+    res.status(200).json({ message: 'Login successful!',token });
 
   } catch (error) {
     console.error('Error during login:', error);
@@ -110,16 +123,19 @@ passport.use("google", new GoogleStrategy({
 
 
 export const googleCallback = (req, res) => {
-    passport.authenticate('google', { session: false }, (err, user) => {
+    passport.authenticate('google', { session: false }, async(err, user) => {
         if (err ) {
             console.error('Google authentication error:', err);
             return res.redirect('/login?error=google-auth-failed');
         }
 
-        
+        const userResult = await pool.query('SELECT * FROM users WHERE email = $1',[user.email]);
+        const dbUser= userResult.rows[0];
+
+        const token = generateToken(dbUser);
 
         // Redirect to frontend with token
-        res.redirect(`http://localhost:5173/google-success?token=${true}`);
+        res.redirect(`http://localhost:5173/google-success?token=${token}`);
     })(req, res);
 };
 
