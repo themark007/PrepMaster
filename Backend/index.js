@@ -6,7 +6,7 @@ import planRoutes from './routes/planRoutes.js';
 import { Strategy } from 'passport-google-oauth2';
 import GoogleStrategy from 'passport-google-oauth2'
 import passport from 'passport';
-
+import profileRoutes from './routes/profileRoutes.js';
 
 
 
@@ -31,6 +31,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/plans', planRoutes );
+app.use('/api/profile', profileRoutes);
 
 
 app.listen(PORT, () => {

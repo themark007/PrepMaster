@@ -14,6 +14,7 @@ import useAuthStore from './components/store/authStore.js'
 import { Navigate } from 'react-router-dom'
 import GoogleSuccess from './components/google-success.jsx'
 import CreatePlaylist from './components/CreatePlaylist.jsx'
+import ProfileForm from './components/ProfileForm.jsx'
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/google-success" element={<GoogleSuccess />} />
+          <Route path="/profile" element={<ProfileForm />} />
 
           {/* Protected Dashboard */}
           <Route path="/dashboard" element={
@@ -41,6 +43,8 @@ function App() {
               <CreatePlaylist />
             </ProtectedRoute>
           } />
+
+          
 
           
 
