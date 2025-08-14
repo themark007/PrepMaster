@@ -3,7 +3,9 @@ import { plann , getPlanByPlaylistId ,getUserPlaylists} from '../controllers/pla
 const router = express.Router();
 
 router.post('/create', plann);
-router.post('/view', getPlanByPlaylistId);
-router.get('/playlistid', getUserPlaylists);
+router.get('/view/:playlist_id', getPlanByPlaylistId);
+
+router.get('/playlistid/:user_id', getUserPlaylists);
+
 
 export default router;
