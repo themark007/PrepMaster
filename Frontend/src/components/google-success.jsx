@@ -11,11 +11,11 @@ export default function GoogleSuccess() {
   const navigate = useNavigate();
   
 const login = useAuthStore((state) => state.login);
-const token = true;
+
 
  useEffect(() => {
   const params = new URLSearchParams(window.location.search);
-  const token = params.get("token");
+  const token = params.get("token") || localStorage.getItem("auth_token") || true;
   
 
   if (token) {

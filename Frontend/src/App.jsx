@@ -13,7 +13,7 @@ import NotFound from './components/NotFound.jsx'
 import useAuthStore from './components/store/authStore.js'
 import { Navigate } from 'react-router-dom'
 import GoogleSuccess from './components/google-success.jsx'
-import Create from './components/playlist/Create.jsx'
+import CreatePlaylist from './components/CreatePlaylist.jsx'
 
 
 function App() {
@@ -36,9 +36,9 @@ function App() {
 
 
            {/* Protected Dashboard */}
-          <Route path="/playlist" element={
+          <Route path="/create-plan" element={
             <ProtectedRoute>
-              <Create />
+              <CreatePlaylist />
             </ProtectedRoute>
           } />
 

@@ -1,10 +1,19 @@
 // store/authStore.js
-import { create } from 'zustand';
+import { create } from "zustand";
 
 const useAuthStore = create((set) => ({
-  isLoggedIn: false,
-  login: () => set({ isLoggedIn: true }),
-  logout: () => set({ isLoggedIn: false })
+  token: localStorage.getItem("auth_token") || null,
+  isLoggedIn: !!localStorage.getItem("auth_token"),
+
+  login: (token) => {
+    localStorage.setItem("auth_token", token);
+    set({ token, isLoggedIn: true });
+  },
+
+  logout: () => {
+    localStorage.removeItem("auth_token");
+    set({ token: null, isLoggedIn: false });
+  },
 }));
 
 export default useAuthStore;
