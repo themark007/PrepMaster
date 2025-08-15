@@ -155,3 +155,63 @@ export const getUserPlaylists = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+// 3️⃣ Update Video Completion Status
+export const updateVideoCompletion = async (req, res) => {
+  try {
+    const { video_id, is_completed } = req.body;
+
+    if (video_id === undefined || is_completed === undefined) {
+      return res.status(400).json({ success: false, message: "video_id and is_completed are required" });
+    }
+
+    const updateQuery = `
+      UPDATE study_videos
+      SET is_completed = $1
+      WHERE id = $2
+      RETURNING *;
+    `;
+
+    const result = await pool.query(updateQuery, [is_completed, video_id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Video not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Video status updated", video: result.rows[0] });
+
+  } catch (error) {
+    console.error("Error updating video completion:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// 4️⃣ Update Video Notes
+export const updateVideoNotes = async (req, res) => {
+  try {
+    const { video_id, notes } = req.body;
+
+    if (video_id === undefined || notes === undefined) {
+      return res.status(400).json({ success: false, message: "video_id and notes are required" });
+    }
+
+    const updateQuery = `
+      UPDATE study_videos
+      SET notes = $1
+      WHERE id = $2
+      RETURNING *;
+    `;
+
+    const result = await pool.query(updateQuery, [notes, video_id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Video not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Notes updated", video: result.rows[0] });
+
+  } catch (error) {
+    console.error("Error updating video notes:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

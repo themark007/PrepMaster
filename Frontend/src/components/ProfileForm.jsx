@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./ProfileForm.css"; // Import CSS file
+import "./profileForm.css";
+
 
 export default function ProfileForm({ userId }) {
   const [profile, setProfile] = useState({
@@ -18,7 +19,8 @@ export default function ProfileForm({ userId }) {
   const [completionPercentage, setCompletionPercentage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState("profile");
+  const [isEditing, setIsEditing] = useState(false);
+  const [backupProfile, setBackupProfile] = useState(null);
   const fileInputRef = useRef(null);
   const formRef = useRef(null);
   const confettiRef = useRef(null);
@@ -51,6 +53,7 @@ export default function ProfileForm({ userId }) {
         if (data) {
           setProfile(data);
           setPreviewUrl(data.photo_url || "");
+          setBackupProfile(data);
         }
       } catch (err) {
         toast.error("Failed to load profile data");
@@ -146,6 +149,8 @@ export default function ProfileForm({ userId }) {
         toast.success("Profile saved successfully!");
         setProfile(data);
         setPreviewUrl(data.photo_url || "");
+        setBackupProfile(data);
+        setIsEditing(false);
         triggerConfetti();
       } else {
         toast.error(data.message || "Error saving profile");
@@ -155,6 +160,17 @@ export default function ProfileForm({ userId }) {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const startEditing = () => {
+    setBackupProfile({...profile});
+    setIsEditing(true);
+  };
+
+  const cancelEditing = () => {
+    setProfile(backupProfile);
+    setPreviewUrl(backupProfile.photo_url || "");
+    setIsEditing(false);
   };
 
   // Render progress indicator
@@ -228,8 +244,42 @@ export default function ProfileForm({ userId }) {
     );
   };
 
+  // Render form field with edit pencil
+  const renderEditableField = (label, name, type = "text", isTextarea = false) => (
+    <div className="form-group">
+      <label className="input-label">
+        {label}
+        {isEditing && <span className="edit-icon" onClick={() => document.getElementById(name).focus()}>✏️</span>}
+      </label>
+      {isTextarea ? (
+        <textarea
+          id={name}
+          name={name}
+          value={profile[name]}
+          onChange={handleChange}
+          placeholder={`Enter your ${label.toLowerCase()}...`}
+          className="bio-input"
+          rows="3"
+          maxLength={200}
+          readOnly={!isEditing}
+        />
+      ) : (
+        <input
+          id={name}
+          name={name}
+          type={type}
+          value={profile[name]}
+          onChange={handleChange}
+          placeholder={`Enter your ${label.toLowerCase()}...`}
+          className="social-input"
+          readOnly={!isEditing}
+        />
+      )}
+    </div>
+  );
+
   return (
-    <div className="profile-container">
+    <div className="profile-form-container">
       {/* Confetti effect */}
       <div ref={confettiRef} className="confetti-container">
         {Array.from({ length: 150 }).map((_, i) => (
@@ -239,165 +289,143 @@ export default function ProfileForm({ userId }) {
       
       <div className="glass-card">
         <div className="header">
-          <h1 className="title">Your Professional Profile</h1>
-          <p className="subtitle">Complete your profile to increase visibility</p>
+          <div>
+            <h1 className="title">Your Professional Profile</h1>
+            <p className="subtitle">Complete your profile to increase visibility</p>
+          </div>
+          {!isEditing && (
+            <button className="edit-button" onClick={startEditing}>
+              <span className="edit-icon">✏️</span> Edit Profile
+            </button>
+          )}
         </div>
         
-        <div className="tabs">
-          <button 
-            className={`tab ${activeTab === "profile" ? "active" : ""}`}
-            onClick={() => setActiveTab("profile")}
-          >
-            Profile
-          </button>
-          <button 
-            className={`tab ${activeTab === "preview" ? "active" : ""}`}
-            onClick={() => setActiveTab("preview")}
-          >
-            Preview
-          </button>
-        </div>
-        
-        {activeTab === "profile" ? (
-          <form onSubmit={handleSubmit} ref={formRef} className="profile-form">
-            <div className="profile-section">
-              <div className="avatar-container">
-                <div 
-                  className="avatar-wrapper"
-                  onClick={triggerFileInput}
-                >
-                  {previewUrl ? (
-                    <img
-                      src={previewUrl}
-                      alt="Profile"
-                      className="avatar"
-                    />
-                  ) : (
-                    <div className="avatar-placeholder">
-                      <div className="camera-icon">📷</div>
-                      <div className="upload-text">Upload Photo</div>
-                    </div>
-                  )}
+        <div className="profile-content">
+          <div className="profile-section">
+            <div className="avatar-container">
+              <div 
+                className="avatar-wrapper"
+                onClick={isEditing ? triggerFileInput : undefined}
+              >
+                {previewUrl ? (
+                  <img
+                    src={previewUrl}
+                    alt="Profile"
+                    className="avatar"
+                  />
+                ) : (
+                  <div className="avatar-placeholder">
+                    <div className="camera-icon">📷</div>
+                    <div className="upload-text">{isEditing ? "Upload Photo" : "No Photo"}</div>
+                  </div>
+                )}
+                {isEditing && (
                   <div className="avatar-overlay">
                     <div className="camera-icon-large">📷</div>
                   </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handlePhotoChange}
-                    ref={fileInputRef}
-                    className="file-input"
-                  />
-                </div>
-                
-                <div className="progress-container">
-                  {renderProgressIndicator()}
-                  <div className="progress-label">
-                    {completionPercentage === 100 ? (
-                      <span className="complete">Profile Complete! 🎉</span>
-                    ) : (
-                      <span>{completionPercentage}% Complete</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="form-group">
-                <label className="input-label">
-                  Bio <span className="char-count">{profile.bio?.length || 0}/200</span>
-                </label>
-                <textarea
-                  name="bio"
-                  value={profile.bio}
-                  onChange={handleChange}
-                  placeholder="Tell us about yourself..."
-                  className="bio-input"
-                  rows="3"
-                  maxLength={200}
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                  ref={fileInputRef}
+                  className="file-input"
                 />
               </div>
-            </div>
-            
-            <div className="social-section">
-              <h3 className="section-title">Social Links</h3>
               
-              {Object.keys(socialIcons).map((field) => (
-                <div key={field} className="form-group">
-                  <div className="input-with-icon">
-                    <span className="input-icon">{socialIcons[field]}</span>
-                    <input
-                      name={field}
-                      value={profile[field]}
-                      onChange={handleChange}
-                      placeholder={`https://${field}.com/yourusername`}
-                      className="social-input"
-                    />
-                  </div>
+              <div className="progress-container">
+                {renderProgressIndicator()}
+                <div className="progress-label">
+                  {completionPercentage === 100 ? (
+                    <span className="complete">Profile Complete! 🎉</span>
+                  ) : (
+                    <span>{completionPercentage}% Complete</span>
+                  )}
                 </div>
-              ))}
-            </div>
-            
-            <button
-              type="submit"
-              className={`save-button ${isSaving ? "saving" : ""}`}
-              disabled={isSaving}
-            >
-              {isSaving ? (
-                <div className="button-spinner"></div>
-              ) : (
-                <>
-                  <span>Save Profile</span>
-                  <span className="save-icon">💾</span>
-                </>
-              )}
-            </button>
-          </form>
-        ) : (
-          <div className="profile-preview">
-            <div className="preview-header">
-              <div className="preview-avatar">
-                {previewUrl ? (
-                  <img src={previewUrl} alt="Profile" className="preview-image" />
-                ) : (
-                  <div className="preview-placeholder">No Image</div>
-                )}
-              </div>
-              <div className="preview-info">
-                <h2 className="preview-name">John Doe</h2>
-                <p className="preview-title">Senior Designer at TechCorp</p>
-                <div className="preview-badges">
-                  <span className="badge verified">Verified</span>
-                  <span className="badge pro">Pro Member</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="preview-bio">
-              <h3>About Me</h3>
-              <p>{profile.bio || "No bio added yet"}</p>
-            </div>
-            
-            <div className="preview-social">
-              <h3>Connect With Me</h3>
-              {renderSocialPreview()}
-            </div>
-            
-            <div className="preview-stats">
-              <div className="stat">
-                <div className="stat-value">1.2K</div>
-                <div className="stat-label">Connections</div>
-              </div>
-              <div className="stat">
-                <div className="stat-value">98%</div>
-                <div className="stat-label">Profile Strength</div>
-              </div>
-              <div className="stat">
-                <div className="stat-value">24</div>
-                <div className="stat-label">Endorsements</div>
               </div>
             </div>
           </div>
-        )}
+          
+          {isEditing ? (
+            <form onSubmit={handleSubmit} ref={formRef} className="profile-form">
+              <div className="form-section">
+                <h3 className="section-title">Personal Information</h3>
+                {renderEditableField("Bio", "bio", "text", true)}
+              </div>
+              
+              <div className="social-section">
+                <h3 className="section-title">Social Links</h3>
+                
+                {Object.keys(socialIcons).map((field) => (
+                  <div key={field} className="form-group">
+                    <div className="input-with-icon">
+                      <span className="input-icon">{socialIcons[field]}</span>
+                      <input
+                        name={field}
+                        value={profile[field]}
+                        onChange={handleChange}
+                        placeholder={`https://${field}.com/yourusername`}
+                        className="social-input"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="form-buttons">
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={cancelEditing}
+                  disabled={isSaving}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className={`save-button ${isSaving ? "saving" : ""}`}
+                  disabled={isSaving}
+                >
+                  {isSaving ? (
+                    <div className="button-spinner"></div>
+                  ) : (
+                    <>
+                      <span>Save Profile</span>
+                      <span className="save-icon">💾</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="profile-preview">
+              <div className="preview-bio">
+                <h3>About Me</h3>
+                <p>{profile.bio || "No bio added yet"}</p>
+              </div>
+              
+              <div className="preview-social">
+                <h3>Connect With Me</h3>
+                {renderSocialPreview()}
+              </div>
+              
+              <div className="preview-stats">
+                <div className="stat">
+                  <div className="stat-value">1.2K</div>
+                  <div className="stat-label">Connections</div>
+                </div>
+                <div className="stat">
+                  <div className="stat-value">{completionPercentage}%</div>
+                  <div className="stat-label">Profile Strength</div>
+                </div>
+                <div className="stat">
+                  <div className="stat-value">24</div>
+                  <div className="stat-label">Endorsements</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
       
       <ToastContainer 

@@ -15,6 +15,7 @@ import { Navigate } from 'react-router-dom'
 import GoogleSuccess from './components/google-success.jsx'
 import CreatePlaylist from './components/CreatePlaylist.jsx'
 import ProfileForm from './components/ProfileForm.jsx'
+import ProFeaturesPage from './components/ProFeaturesPage.jsx'
 
 
 function App() {
@@ -41,6 +42,13 @@ function App() {
           <Route path="/create-plan" element={
             <ProtectedRoute>
               <CreatePlaylist />
+            </ProtectedRoute>
+          } />
+
+ {/* Protected Dashboard */}
+          <Route path="/pro-features" element={
+            <ProtectedRoute>
+              <ProFeaturesPage />
             </ProtectedRoute>
           } />
 

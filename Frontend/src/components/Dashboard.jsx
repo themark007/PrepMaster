@@ -24,6 +24,7 @@ export default function Dashboard() {
       {Object.entries(playlistDetails).map(([playlistId, videos]) => {
         // Get playlist name from the first video object
         const playlistName = videos[0]?.name || "Untitled Playlist";
+        //console.log("Playlist ID:", playlistId, "Videos:", videos);
 
         return (
           <StudyPlanCard

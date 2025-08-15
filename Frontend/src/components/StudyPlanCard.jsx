@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 export default function StudyPlanCard({ playlistId, videos, playlistName }) {
   const [completed, setCompleted] = useState(
@@ -12,9 +12,11 @@ export default function StudyPlanCard({ playlistId, videos, playlistName }) {
   const [coverPhoto, setCoverPhoto] = useState(
     `https://picsum.photos/seed/${playlistId}/800/300`
   );
-  
+  console.log("videos:", videos);
   // Sample tags for organization
   const tags = ["Mathematics", "Computer Science", "Algorithms", playlistName.split(" ")[0]];
+
+  const saveTimeout = useRef(null);
 
   // Calculate progress
   useEffect(() => {
@@ -22,11 +24,59 @@ export default function StudyPlanCard({ playlistId, videos, playlistName }) {
     setProgress(Math.round((completedCount / videos.length) * 100));
   }, [completed, videos.length]);
 
-  const toggleCompleted = (index) => {
-    const updated = [...completed];
-    updated[index] = !updated[index];
-    setCompleted(updated);
-  };
+const toggleCompleted = async (index) => {
+  const updated = [...completed];
+  updated[index] = !updated[index];
+  setCompleted(updated);
+
+  // Use the correct property name from your videos array
+  const video = videos[index];
+
+  try {
+    const response = await fetch("http://localhost:3000/api/plans/videos/completion", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        video_id: video.video_id,  // <-- use video.video_id
+        is_completed: updated[index],
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+      console.error("Failed to update video status:", data.message);
+    } else {
+      console.log("Video status updated:", data.video);
+    }
+  } catch (err) {
+    console.error("Error updating video status:", err);
+  }
+};
+const saveNotes = async (videoId, notesText) => {
+  try {
+    const response = await fetch("http://localhost:3000/api/plans/videos/notes", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ video_id: videoId, notes: notesText })
+    });
+
+    const data = await response.json();
+    if (!data.success) {
+      console.error("Failed to save notes:", data.message);
+    } else {
+      console.log("Notes saved:", data.video);
+    }
+  } catch (err) {
+    console.error("Error saving notes:", err);
+  }
+};
+
+
+
+
 
   const toggleExpand = () => {
     setExpanded(!expanded);
@@ -182,13 +232,26 @@ export default function StudyPlanCard({ playlistId, videos, playlistName }) {
             </div>
             
             <div className="notes-container">
-              <textarea
-                id="notes-textarea"
-                placeholder="Start typing your notes here... Use markdown-like formatting (**, _, `, >, -) or the formatting buttons above"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className="notes-textarea"
-              />
+            <textarea
+  id="notes-textarea"
+  placeholder="Start typing your notes here..."
+  value={notes}
+  onChange={(e) => {
+    setNotes(e.target.value);
+
+    if (focusedVideo === null) return;
+
+    // debounce: clear previous timeout
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+
+    // set new timeout to save after 1.5s of inactivity
+    saveTimeout.current = setTimeout(() => {
+      saveNotes(videos[focusedVideo].video_id, e.target.value);
+    }, 1500);
+  }}
+  className="notes-textarea"
+/>
+
               <div className="notes-counter">
                 {notes.length}/2000 characters
               </div>
