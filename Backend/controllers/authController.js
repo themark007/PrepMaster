@@ -35,15 +35,14 @@ export const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser= await pool.query(
-      'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
+    const newUser = await pool.query(
+      'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, name, email',
       [name, email, hashedPassword]
     );
 
     const token = generateToken(newUser.rows[0]);
 
-    res.status(201).json({ message: 'Signup successful!' ,token});
-
+    res.status(201).json({ message: 'Signup successful!', token });
   } catch (error) {
     console.error('Error during signup:', error);
     res.status(500).json({ message: 'Internal server error' });

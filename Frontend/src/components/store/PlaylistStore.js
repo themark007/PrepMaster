@@ -1,14 +1,29 @@
+// src/store/usePlaylistStore.js
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { jwtDecode } from "jwt-decode";;
 
 const usePlaylistStore = create(
   persist(
     (set) => ({
-      // Hardcoded userId
-      userId: "1",
+      // Initially null, will be loaded from token
+      userId: null,
 
-      // Multiple playlist IDs (initially empty)
+      // Playlists
       playlistIds: [],
+
+      // Decode token and set userId
+      loadUserIdFromToken: () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) return;
+          const decoded = jwtDecode(token);
+          set({ userId: decoded.id });
+        } catch (err) {
+          console.error("Invalid token", err);
+          set({ userId: null });
+        }
+      },
 
       // Set playlist IDs from backend
       setPlaylistIds: (ids) => set({ playlistIds: ids }),

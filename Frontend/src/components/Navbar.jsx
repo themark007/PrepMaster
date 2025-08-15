@@ -40,6 +40,9 @@ function Navbar() {
         <Link to="/profile" style={linkStyle}>
           Profile
         </Link>
+        <Link to="/login" style={linkStyle}>
+          logout
+        </Link>
       </div>
     </nav>
   );

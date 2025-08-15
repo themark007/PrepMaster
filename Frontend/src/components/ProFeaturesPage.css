@@ -355,6 +355,356 @@ h2 {
   font-size: 0.9rem;
 }
 
+/* src/components/ProFeaturesPage.css */
+.pro-features-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* Login Styles */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.login-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 15px 50px rgba(0, 0, 150, 0.15);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-header {
+  margin-bottom: 2rem;
+}
+
+.login-header h2 {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin: 1rem 0 0.5rem;
+}
+
+.login-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 1.8rem;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6a11cb;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  border-color: #6a11cb;
+  box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+  outline: none;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.login-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 15px rgba(106, 17, 203, 0.3);
+}
+
+.login-footer {
+  margin-top: 1.5rem;
+  color: #78909c;
+  font-size: 0.9rem;
+}
+
+/* Payment Processing Styles */
+.payment-result {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  text-align: center;
+}
+
+.processing-container, 
+.success-container, 
+.coming-soon-container {
+  background: white;
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 15px 50px rgba(0, 0, 150, 0.1);
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  overflow: hidden;
+}
+
+.loader, .success-icon, .crown-icon {
+  margin: 0 auto 1.5rem;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader {
+  background: rgba(106, 17, 203, 0.1);
+  color: #6a11cb;
+}
+
+.success-icon {
+  background: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+}
+
+.crown-icon {
+  background: rgba(255, 180, 0, 0.1);
+  color: #ffb400;
+}
+
+.payment-details {
+  background: #f8f9fa;
+  padding: 1.2rem;
+  border-radius: 10px;
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.payment-details p {
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
+.back-btn, .logout-btn {
+  padding: 0.8rem 1.5rem;
+  margin: 1rem 0.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.back-btn {
+  background: #f0f2f5;
+  border: 1px solid #e0e0e0;
+  color: #2c3e50;
+}
+
+.logout-btn {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  color: #e53935;
+}
+
+.back-btn:hover {
+  background: #e0e0e0;
+}
+
+.logout-btn:hover {
+  background: #ffebee;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #ffb400;
+  border-radius: 50%;
+  animation: confetti-fall 5s infinite;
+}
+
+.confetti:nth-child(1) {
+  left: 10%;
+  animation-delay: 0s;
+  background: #6a11cb;
+}
+
+.confetti:nth-child(2) {
+  left: 30%;
+  animation-delay: 1s;
+  background: #2575fc;
+}
+
+.confetti:nth-child(3) {
+  left: 70%;
+  animation-delay: 2s;
+  background: #4CAF50;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(500px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Animations */
+.scale-in {
+  animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* User info in header */
+.user-info {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 15px;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: white;
+  color: #6a11cb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.user-actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-actions span {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.user-actions button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-align: right;
+  padding: 2px 0;
+  opacity: 0.8;
+}
+
+.user-actions button:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* Icons in buttons */
+.btn-icon {
+  margin-left: 10px;
+}
+
+.plan-icon-svg {
+  width: 60px;
+  height: 60px;
+  color: #6a11cb;
+}
+
+/* Existing styles remain the same, only additions shown */
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .features-grid {
