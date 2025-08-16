@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import usePlaylistStore from "../store/PlaylistStore";
+import useUserStore from "../store/useUserStore";
 
 export default function useFetchUserPlaylists() {
-  const { userId, setPlaylistIds } = usePlaylistStore();
+  const {  setPlaylistIds } = usePlaylistStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const userId = useUserStore((state) => state.user?.id); // Get user ID from Zustand store
 
   useEffect(() => {
     if (!userId) return;

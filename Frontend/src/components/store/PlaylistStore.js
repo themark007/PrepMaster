@@ -1,31 +1,14 @@
 // src/store/usePlaylistStore.js
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { jwtDecode } from "jwt-decode";;
+import useUserStore from "./useUserStore";
 
 const usePlaylistStore = create(
   persist(
-    (set) => ({
-      // Initially null, will be loaded from token
-      userId: null,
-
-      // Playlists
+    (set, get) => ({
       playlistIds: [],
 
-      // Decode token and set userId
-      loadUserIdFromToken: () => {
-        try {
-          const token = localStorage.getItem("token");
-          if (!token) return;
-          const decoded = jwtDecode(token);
-          set({ userId: decoded.id });
-        } catch (err) {
-          console.error("Invalid token", err);
-          set({ userId: null });
-        }
-      },
-
-      // Set playlist IDs from backend
+      // Set playlist IDs from backend for this user
       setPlaylistIds: (ids) => set({ playlistIds: ids }),
 
       // Add one playlist ID
@@ -39,6 +22,26 @@ const usePlaylistStore = create(
         set((state) => ({
           playlistIds: state.playlistIds.filter((pid) => pid !== id),
         })),
+
+      // Example: fetch playlists using userId from useUserStore
+      fetchUserPlaylists: async () => {
+        const { user } = useUserStore.getState(); 
+        if (!user) return;
+
+         const res = await fetch(
+          `http://localhost:3000/api/plans/playlistid/${user.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Accept": "application/json",
+              "Cache-Control": "no-cache", // 🔹 Prevent browser cache
+            },
+            cache: "no-store", // 🔹 Another way to force fresh fetch
+          }
+        );
+        const data = await res.json();
+        set({ playlistIds: data.map((p) => p.id) });
+      },
     }),
     {
       name: "playlist-storage", // key in localStorage

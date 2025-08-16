@@ -42,7 +42,10 @@ export const signup = async (req, res) => {
 
     const token = generateToken(newUser.rows[0]);
 
-    res.status(201).json({ message: 'Signup successful!', token });
+    res.status(201).json({
+  message: "Signup successful!",
+  user: newUser.rows[0],   // includes id, name, email
+});
   } catch (error) {
     console.error('Error during signup:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -71,7 +74,12 @@ export const login = async (req, res) => {
 
     const token = generateToken(user);
 
-    res.status(200).json({ message: 'Login successful!',token });
+    res.status(200).json({ message: 'Login successful!', user: {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  },
+  token });
 
   } catch (error) {
     console.error('Error during login:', error);

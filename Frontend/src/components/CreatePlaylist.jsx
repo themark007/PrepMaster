@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import useUserStore from "./store/useUserStore";
 
 function CreatePlaylist() {
   const navigate = useNavigate();
@@ -13,6 +14,12 @@ function CreatePlaylist() {
   const [step, setStep] = useState(1);
   const nameInputRef = useRef(null);
   const urlInputRef = useRef(null);
+   const { user } = useUserStore();
+
+     if (!user) {
+    return <p>Loading user...</p>;
+  }
+
 
   useEffect(() => {
     nameInputRef.current.focus();
@@ -95,7 +102,7 @@ function CreatePlaylist() {
          method: "POST",
          headers: { "Content-Type": "application/json" },
          body: JSON.stringify({
-           user_id: 1, // This would come from auth context
+           user_id: user.id, 
            name,
            playlistUrl,
          }),

@@ -3,9 +3,12 @@ import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "./store/authStore";
+import useUserStore from "./store/useUserStore";
 
 export default function Login() {
   const navigate = useNavigate();
+  const setUser = useUserStore((state) => state.setUser);
+  const { user } = useUserStore();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -48,10 +51,13 @@ export default function Login() {
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem("token",data.token);
+      localStorage.setItem("token", data.token);
+        setUser(data.user); // store user {id, name, email} in Zustand
+
         toast.success("Login successful!");
-         login();
-        setTimeout(() => navigate("/dashboard"), 1500); // Navigate after toast
+        login();
+
+        setTimeout(() => navigate("/dashboard"), 1500);
       } else {
         toast.error(data.message || "Invalid credentials");
       }

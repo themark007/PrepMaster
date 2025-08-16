@@ -1,18 +1,19 @@
 // src/store/useUserStore.js
-import { create } from 'zustand';
-import jwtDecode from 'jwt-decode';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export const useUserStore = create((set) => ({
-  userId: null,
-  loadUserId: () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      const decoded = jwtDecode(token);
-      set({ userId: decoded.id });
-    } catch (err) {
-      console.error("Invalid token", err);
-      set({ userId: null });
+const useUserStore = create(
+  persist(
+    (set) => ({
+      user: null, // {id, name, email}
+
+      setUser: (user) => set({ user }),
+      clearUser: () => set({ user: null }),
+    }),
+    {
+      name: "user-storage", // localStorage key
     }
-  },
-}));
+  )
+);
+
+export default useUserStore;

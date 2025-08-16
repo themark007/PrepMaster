@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Navigate, useNavigate } from "react-router-dom";
+import useUserStore from "./store/useUserStore";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -9,6 +10,8 @@ export default function Signup() {
     email: "",
     password: "",
   });
+
+  const { setUser } = useUserStore();
 
   const navigate = useNavigate();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -57,6 +60,7 @@ export default function Signup() {
       const data = await res.json();
 
       if (res.ok) {
+        setUser(data.user);
         localStorage.setItem("token", data.token);
         toast.success("Signup successful!");
         setTimeout(() => navigate("/Login"), 1500);

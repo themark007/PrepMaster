@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useUserStore from "../store/useUserStore";
 
 
 
 export default function CreatePlaylist() {
   const [name, setName] = useState("");
   const [playlistUrl, setPlaylistUrl] = useState("");
+  const { user } = useUserStore();
  
   
 
@@ -17,7 +19,7 @@ export default function CreatePlaylist() {
       toast.error("Please fill in all fields");
       return;
     }
-    const userId = 1;
+    const userId = user.id;
 
     try {
       const res = await fetch("http://localhost:3000/api/plans/create", {
