@@ -15,7 +15,7 @@ export default function useFetchUserPlaylists() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`http://localhost:3000/api/plans/playlistid/${userId}`);
+        const res = await fetch(`https://prepmaster-backend-i1sj.onrender.com/api/plans/playlistid/${userId}`);
         const data = await res.json();
 
         if (!res.ok) {

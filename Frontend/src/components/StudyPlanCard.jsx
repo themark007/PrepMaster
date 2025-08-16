@@ -33,7 +33,7 @@ const toggleCompleted = async (index) => {
   const video = videos[index];
 
   try {
-    const response = await fetch("http://localhost:3000/api/plans/videos/completion", {
+    const response = await fetch("https://prepmaster-backend-i1sj.onrender.com/api/plans/videos/completion", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -57,7 +57,7 @@ const toggleCompleted = async (index) => {
 };
 const saveNotes = async (videoId, notesText) => {
   try {
-    const response = await fetch("http://localhost:3000/api/plans/videos/notes", {
+    const response = await fetch("https://prepmaster-backend-i1sj.onrender.com/api/plans/videos/notes", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ video_id: videoId, notes: notesText })

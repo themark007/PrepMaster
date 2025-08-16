@@ -92,7 +92,7 @@ export const login = async (req, res) => {
 passport.use("google", new GoogleStrategy({
     clientID: process.env.Client_ID,
     clientSecret: process.env.Client_secret,  // make sure case matches
-    callbackURL: "http://localhost:3000/api/auth/google/callback",
+    callbackURL: "https://prepmaster-backend-i1sj.onrender.com/api/auth/google/callback",
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
 }, async (accessToken, refreshToken, profile, cb) => {
     try {

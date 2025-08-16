@@ -48,7 +48,7 @@ export default function ProfileForm({ userId }) {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/profile/${userId}`);
+        const res = await fetch(`https://prepmaster-backend-i1sj.onrender.com/api/profile/${userId}`);
         const data = await res.json();
         if (data) {
           setProfile(data);
@@ -117,7 +117,7 @@ export default function ProfileForm({ userId }) {
       formData.append("photo", photoFile);
 
       try {
-        const res = await fetch("http://localhost:3000/api/upload-photo", {
+        const res = await fetch("https://prepmaster-backend-i1sj.onrender.com/api/upload-photo", {
           method: "POST",
           body: formData,
         });
@@ -137,7 +137,7 @@ export default function ProfileForm({ userId }) {
 
     // Save profile data
     try {
-      const res = await fetch("http://localhost:3000/api/profile", {
+      const res = await fetch("https://prepmaster-backend-i1sj.onrender.com/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, ...profile, photo_url: photoUrl }),

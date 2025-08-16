@@ -29,7 +29,7 @@ const usePlaylistStore = create(
         if (!user) return;
 
          const res = await fetch(
-          `http://localhost:3000/api/plans/playlistid/${user.id}`,
+          `https://prepmaster-backend-i1sj.onrender.com/api/plans/playlistid/${user.id}`,
           {
             method: "GET",
             headers: {

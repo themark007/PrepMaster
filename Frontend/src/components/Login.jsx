@@ -42,7 +42,7 @@ export default function Login() {
     if (!validate()) return;
 
     try {
-      const res = await fetch("http://localhost:3000/api/auth/login", {
+      const res = await fetch("https://prepmaster-backend-i1sj.onrender.com/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -69,7 +69,7 @@ export default function Login() {
   const handleGoogleLogin = () => {
     // Replace this with actual Google login logic
     console.log("Redirecting to Google login...");
-      window.location.href = "http://localhost:3000/api/auth/google";
+      window.location.href = "https://prepmaster-backend-i1sj.onrender.com/api/auth/google";
   };
 
 

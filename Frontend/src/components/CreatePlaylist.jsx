@@ -98,7 +98,7 @@ function CreatePlaylist() {
 
     try {
       
-      const res = await fetch("http://localhost:3000/api/plans/create", {
+      const res = await fetch("https://prepmaster-backend-i1sj.onrender.com/api/plans/create", {
          method: "POST",
          headers: { "Content-Type": "application/json" },
          body: JSON.stringify({

@@ -20,7 +20,7 @@ const { setPlaylistDetails } = usePlaylistDetailsStore(); // for setting details
         const detailsArray = [];
 
         for (const playlistId of playlistIds) {
-          const res = await fetch(`http://localhost:3000/api/plans/view/${playlistId}`, {
+          const res = await fetch(`https://prepmaster-backend-i1sj.onrender.com/api/plans/view/${playlistId}`, {
   method: "GET",
   headers: { "Accept": "application/json" },
 });
